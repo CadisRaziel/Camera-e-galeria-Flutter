@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+
+//Lembrando, a unica coisa que falta implementar é ao clicar no icone 'X' quando estiver no 'edit Photo'
+//ele nao der erro, e voltar para a tela inicial
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -26,9 +30,8 @@ class _HomePageState extends State<HomePage> {
 
     //conferindo se a imagem realmente veio
     if (imagemTemporaria != null) {
-
       //colocando a função que vai cortar a imagem
-      File imagemCortada =  await cortarImagem(File(imagemTemporaria.path));
+      File imagemCortada = await cortarImagem(File(imagemTemporaria.path));
 
       setState(() {
         //Ja que ela vai ser exibida no app a gente precisa alterar o estado, por isso o setState
@@ -46,9 +49,8 @@ class _HomePageState extends State<HomePage> {
 
     //conferindo se a imagem realmente veio
     if (imagemTemporaria != null) {
-
       //colocando a função que vai cortar a imagem
-     File imagemCortada =  await cortarImagem(File(imagemTemporaria.path));
+      File imagemCortada = await cortarImagem(File(imagemTemporaria.path));
 
       setState(() {
         //Ja que ela vai ser exibida no app a gente precisa alterar o estado, por isso o setState
@@ -64,14 +66,30 @@ class _HomePageState extends State<HomePage> {
   cortarImagem(File imagemTemporaria) async {
     //toda imagem que tiver com essa função sera cortada conforme definimos
     //aqui nao precisamos conferir se o arquivo veio, pois ela ja esta sendo feita ali no 'pegarImagemCamera e pegarImagemGaleria'
-    return await ImageCropper.cropImage(sourcePath: imagemTemporaria.path,
+    return await ImageCropper.cropImage(
+        sourcePath: imagemTemporaria.path,
 
         //atributo que vai ser setado para ser cortado, para evitar que o usuario faça bobagem
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
           CropAspectRatioPreset.ratio16x9,
           CropAspectRatioPreset.ratio4x3,
-        ]);
+        ],
+        //Editando a toolbar do 'Edit photo'
+        androidUiSettings: AndroidUiSettings(
+            //toolbarTitle = coloca o titulo no lugar do 'Edit photo'
+            toolbarTitle: 'Imagem da Galeria',
+
+            //toolbarColor = poe a cor aonde esta o titulo
+            toolbarColor: Colors.purple,
+
+            //toolbarWidgetColor = altera a cor dos icones e da frase 'Imagem da galeria'
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
   }
 
   @override
